@@ -1,13 +1,13 @@
 var http, director, cool, bot, router, server, port;
 
 http        = require('http');
+https       = require('https');
 director    = require('director');
 cool        = require('cool-ascii-faces');
 bot         = require('./bot.js');
 
 router = new director.http.Router({
   '/' : {
-    post: bot.respond,
     get: ping
   }
 });
@@ -26,6 +26,14 @@ server = http.createServer(function (req, res) {
 
 port = Number(process.env.PORT || 5000);
 server.listen(port);
+bot.checkGamesInitialize();
+https.get("https://tilt-bot.herokuapp.com/");
+setInterval(function() {
+    https.get("https://tilt-bot.herokuapp.com/");
+}, 300000);
+setInterval(function() {
+  bot.initialize()
+}, 600000)
 
 function ping() {
   this.res.writeHead(200);
