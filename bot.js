@@ -142,7 +142,7 @@ function getMostRecentGame(message, accountId) {
 function tilt(stats) {
   var botResponse, options, body, botReq;
 
-  botResponse = 'Yikes! ' + stats[0] + ' just lost a League game! They went ' + stats[2] + '/' + stats[3] + '/' + stats[4] + '! That\'s a tilter!';
+  botResponse = 'So Close! ' + stats[0] + ' just lost a League game! They might have lost, but they went ' + stats[2] + '/' + stats[3] + '/' + stats[4] + '! Congrats on a close game! :)';
 
   options = {
     hostname: 'api.groupme.com',
