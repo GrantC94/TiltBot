@@ -1,7 +1,5 @@
 language: node_js
 
-echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-
 before_install:
   - docker build -t grantwc94/tiltbot .
 
