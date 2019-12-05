@@ -1,1 +1,10 @@
 language: node_js
+
+before_install:
+  - docker build -t grantwc94/tiltbot .
+
+deploy:
+  provider: script
+  script: bash docker_push
+  on:
+    branch: master
