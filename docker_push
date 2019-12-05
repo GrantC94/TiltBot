@@ -1,5 +1,5 @@
 #!/bin/bash
 
-echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin registry.heroku.com
+docker login --username=_ --password="$HEROKU_API_KEY" registry.heroku.com
 docker build -t registry.heroku.com/tiltbot2/web .
 docker push registry.heroku.com/tiltbot2/web
