@@ -1,2 +1,3 @@
 YIKES! {0} went {1} in their last game!
 YIKERS! {0} went {1} in their last game!
+That's a big oof. {0} went {1} in their last game, and lost.
