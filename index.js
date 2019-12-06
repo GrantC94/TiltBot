@@ -27,9 +27,9 @@ server = http.createServer(function (req, res) {
 port = Number(process.env.PORT || 5000);
 server.listen(port);
 bot.checkGamesInitialize();
-https.get("https://tilt-bot.herokuapp.com/");
+https.get("https://tiltbot2.herokuapp.com/");
 setInterval(function() {
-    https.get("https://tilt-bot.herokuapp.com/");
+    https.get("https://tiltbot2.herokuapp.com/");
 }, 300000);
 setInterval(function() {
   bot.initialize()
