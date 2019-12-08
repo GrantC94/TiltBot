@@ -47,7 +47,7 @@ function getGames(message, summonerName) {
   
   options = {
     hostname: 'na1.api.riotgames.com',
-    path: '/lol/match/v4/matchlists/by-account/' + message + '?queue=420&queue=440&endIndex=1&beginIndex=0&api_key=' + leagueKey,
+    path: '/lol/match/v4/matchlists/by-account/' + message + '?queue=420&queue=440&queue=700&endIndex=1&beginIndex=0&api_key=' + leagueKey,
     method: 'GET'
   };
 
