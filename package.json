@@ -2,9 +2,9 @@
   "name": "node-js-getting-started",
   "version": "0.1.2",
   "description": "A sample Node.js app using Express 4",
-  "main": "index.js",
+  "main": "bot/index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node bot/index.js"
   },
   "dependencies": {
     "director": "",
