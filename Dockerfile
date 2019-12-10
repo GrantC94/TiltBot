@@ -18,4 +18,4 @@ COPY . .
 EXPOSE 5000
 EXPOSE 443
 EXPOSE 80
-CMD [ "node", "index.js" ]
+CMD [ "node", "bot/index.js" ]
