@@ -115,7 +115,7 @@ function getMostRecentGame(message, accountId) {
                 stats[4] = result.participants[i].stats.assists
               }
           }
-          if(!stats[1] && !firstRun) {
+          if(!stats[1] && !this.firstRun) {
             tilt(stats)
           } else {
             console.log(stats[0] + ' Winned') 
