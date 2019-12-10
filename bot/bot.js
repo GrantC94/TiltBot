@@ -196,7 +196,7 @@ function sendEachLine(filename) {
 }
 
 function checkGames() {
-  sendEachLine("../resources/summoners.txt")
+  sendEachLine("resources/summoners.txt")
 }
 
 /*function sendEachLineInitialize(filename) {
