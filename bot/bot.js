@@ -3,7 +3,7 @@ var fs = require('fs');
 var botID = process.env.BOT_ID;
 var leagueKey = process.env.LEAGUE_KEY;
 var mostRecentGames = [];
-var firstRun = true;
+var firstRun;
 
 function initialize(firstRun) {
   this.firstRun = firstRun;
