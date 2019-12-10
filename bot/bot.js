@@ -196,6 +196,7 @@ function sendEachLine(filename) {
 }
 
 function checkGames() {
+  console.log(process.cwd())
   sendEachLine("./Resources/summoners.txt")
 }
 
