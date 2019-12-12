@@ -3,14 +3,12 @@ var fs = require('fs');
 var botID = process.env.BOT_ID;
 var leagueKey = process.env.LEAGUE_KEY;
 var mostRecentGames = [];
-var firstRun;
 
 function initialize(firstRun) {
-  this.firstRun = firstRun;
-  this.checkGames();
+  this.checkGames(firstRun);
 }
 
-function postMessage(message) {
+function postMessage(message, firstRun) {
   var options, body, botReq;
 
   options = {
@@ -22,11 +20,11 @@ function postMessage(message) {
   botReq = HTTPS.request(options, function(res) {
       if(res.statusCode == 200) {
         res.on('data', function (chunk) {
-          this.getGames(JSON.parse(chunk).accountId, message);
+          getGames(JSON.parse(chunk).accountId, message, firstRun);
         });
       } else if(res.statusCode == 429) {
         sleep(4000)
-        this.postMessage(message);
+        postMessage(message, firstRun);
       } else {
         console.log('rejecting bad status code ' + res.statusCode);
       }
@@ -41,7 +39,7 @@ function postMessage(message) {
   botReq.end(JSON.stringify(body));
 }
 
-function getGames(message, summonerName) {
+function getGames(message, summonerName, firstRun) {
   var botResponse, options, body, botReq;
 
   botResponse = message;
@@ -60,12 +58,12 @@ function getGames(message, summonerName) {
           if(mostRecentGames[summonerName] != gameId) {
             console.log('Updating ' + summonerName + ' latest game to GameID ' + gameId)
             mostRecentGames[summonerName] = gameId;
-            this.getMostRecentGame(gameId, message);
+            getMostRecentGame(gameId, message, firstRun);
           }
         });
       } else if(res.statusCode == 429) {
         sleep(4000)
-        this.getGames(message, summonerName);
+        getGames(message, summonerName, firstRun);
       } else {
         console.log('rejecting bad status code ' + res.statusCode);
       }
@@ -80,7 +78,7 @@ function getGames(message, summonerName) {
   botReq.end(JSON.stringify(body));
 }
 
-function getMostRecentGame(message, accountId) {
+function getMostRecentGame(message, accountId, firstRun) {
   var options, body, botReq;
   
   options = {
@@ -115,7 +113,7 @@ function getMostRecentGame(message, accountId) {
                 stats[4] = result.participants[i].stats.assists
               }
           }
-          if(!stats[1] && !this.firstRun) {
+          if(!stats[1] && !firstRun) {
             tilt(stats)
           } else {
             console.log(stats[0] + ' Winned') 
@@ -182,22 +180,22 @@ function sleep(milliseconds) {
   }
 }
 
-function sendEachLine(filename) {
+function sendEachLine(filename, firstRun) {
   var data = ""
   fs.readFile(filename, function(err, data){
     if(err) throw err;
     var lines = data.toString().split('\n');
     for(var i = 0; i < lines.length; i++){
       if(lines[i] != '')
-      this.postMessage(lines[i]);
+      postMessage(lines[i], firstRun);
       sleep(2000)
     }
  })
 }
 
-function checkGames() {
+function checkGames(firstRun) {
   console.log(process.cwd())
-  this.sendEachLine("./Resources/summoners.txt")
+  sendEachLine("./Resources/summoners.txt", firstRun)
 }
 
 exports.initialize = initialize;
