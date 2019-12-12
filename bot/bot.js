@@ -5,7 +5,7 @@ var leagueKey = process.env.LEAGUE_KEY;
 var mostRecentGames = [];
 
 function initialize(firstRun) {
-  this.checkGames(firstRun);
+  checkGames(firstRun);
 }
 
 function postMessage(message, firstRun) {
