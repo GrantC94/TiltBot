@@ -7,7 +7,7 @@ var firstRun;
 
 function initialize(firstRun) {
   this.firstRun = firstRun;
-  checkGames();
+  this.checkGames();
 }
 
 function postMessage(message) {
@@ -22,11 +22,11 @@ function postMessage(message) {
   botReq = HTTPS.request(options, function(res) {
       if(res.statusCode == 200) {
         res.on('data', function (chunk) {
-          getGames(JSON.parse(chunk).accountId, message);
+          this.getGames(JSON.parse(chunk).accountId, message);
         });
       } else if(res.statusCode == 429) {
         sleep(4000)
-        postMessage(message);
+        this.postMessage(message);
       } else {
         console.log('rejecting bad status code ' + res.statusCode);
       }
@@ -60,12 +60,12 @@ function getGames(message, summonerName) {
           if(mostRecentGames[summonerName] != gameId) {
             console.log('Updating ' + summonerName + ' latest game to GameID ' + gameId)
             mostRecentGames[summonerName] = gameId;
-            getMostRecentGame(gameId, message);
+            this.getMostRecentGame(gameId, message);
           }
         });
       } else if(res.statusCode == 429) {
         sleep(4000)
-        getGames(message, summonerName);
+        this.getGames(message, summonerName);
       } else {
         console.log('rejecting bad status code ' + res.statusCode);
       }
@@ -189,7 +189,7 @@ function sendEachLine(filename) {
     var lines = data.toString().split('\n');
     for(var i = 0; i < lines.length; i++){
       if(lines[i] != '')
-      postMessage(lines[i]);
+      this.postMessage(lines[i]);
       sleep(2000)
     }
  })
@@ -197,94 +197,7 @@ function sendEachLine(filename) {
 
 function checkGames() {
   console.log(process.cwd())
-  sendEachLine("./Resources/summoners.txt")
+  this.sendEachLine("./Resources/summoners.txt")
 }
-
-/*function sendEachLineInitialize(filename) {
-  var data = ""
-  fs.readFile(filename, function(err, data){
-    if(err) throw err;
-    var lines = data.toString().split('\n');
-    for(var i = 0; i < lines.length; i++){
-      if(lines[i] != '')
-      postMessageInitialize(lines[i]);
-      sleep(2000)
-    }
- })
-}
-
-function checkGamesInitialize() {
-  sendEachLineInitialize("summoners.txt")
-}
-
-function postMessageInitialize(message) {
-  var botResponse, options, body, botReq;
-
-  options = {
-    hostname: 'na1.api.riotgames.com',
-    path: '/lol/summoner/v4/summoners/by-name/' + message + '?api_key=' + leagueKey,
-    method: 'GET'
-  };
-  console.log(message)
-  botReq = HTTPS.request(options, function(res) {
-      if(res.statusCode == 200) {
-        res.on('data', function (chunk) {
-          getGamesInitialize(JSON.parse(chunk).accountId, message);
-        });
-      } else if(res.statusCode == 429) {
-        sleep(4000)
-        postMessageInitialize(message);
-      } else {
-        console.log('rejecting bad status code ' + res.statusCode);
-      }
-  });
-
-  botReq.on('error', function(err) {
-    console.log('error posting message '  + JSON.stringify(err));
-  });
-  botReq.on('timeout', function(err) {
-    console.log('timeout posting message '  + JSON.stringify(err));
-  });
-  botReq.end(JSON.stringify(body));
-}
-
-function getGamesInitialize(message, summonerName) {
-  var botResponse, options, body, botReq;
-
-  botResponse = message;
-  
-  options = {
-    hostname: 'na1.api.riotgames.com',
-    path: '/lol/match/v4/matchlists/by-account/' + message + '?queue=420&queue=440&queue=700&endIndex=1&beginIndex=0&api_key=' + leagueKey,
-    method: 'GET'
-  };
-
-  botReq = HTTPS.request(options, function(res) {
-      if(res.statusCode == 200) {
-        res.on('data', function (chunk) {
-          //console.log('BODY: ' + chunk);
-          var gameId = JSON.parse(chunk).matches[0].gameId
-          if(mostRecentGames[summonerName] != gameId) {
-            console.log('Updating ' + summonerName + ' latest game to GameID ' + gameId)
-            mostRecentGames[summonerName] = gameId;
-          }
-        });
-      } else if(res.statusCode == 429) {
-        sleep(4000)
-        getGamesInitialize(message, summonerName);
-      } else {
-        console.log('rejecting bad status code ' + res.statusCode);
-      }
-  });
-
-  botReq.on('error', function(err) {
-    console.log('error posting message '  + JSON.stringify(err));
-  });
-  botReq.on('timeout', function(err) {
-    console.log('timeout posting message '  + JSON.stringify(err));
-  });
-  botReq.end(JSON.stringify(body));
-}*/
 
 exports.initialize = initialize;
-//exports.checkGamesInitialize = checkGamesInitialize;
