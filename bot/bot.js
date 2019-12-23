@@ -59,7 +59,7 @@ function getGames(message, summonerName) {
           if(mostRecentGames[summonerName] != gameId) {
             oldMostRecentGames[summonerName] = mostRecentGames[summonerName];
             mostRecentGames[summonerName] = gameId;
-            if(oldMostRecentGames[message] != undefined) {
+            if(oldMostRecentGames[summonerName] != undefined) {
               getMostRecentGame(gameId, message);
             } else {
               console.log('Skipping ' + summonerName + '. ' + mostRecentGames[summonerName] + ' is the first game loaded.')
