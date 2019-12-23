@@ -1,2 +1,4 @@
+.travis.yml
+docker_push
 node_modules
 npm-debug.log
