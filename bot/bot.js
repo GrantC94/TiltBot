@@ -5,6 +5,7 @@ var leagueKey = process.env.LEAGUE_KEY;
 var mostRecentGames = [];
 
 function initialize(firstRun) {
+  console.log('initialize ' + firstRun)
   checkGames(firstRun);
 }
 
@@ -20,6 +21,7 @@ function postMessage(message, firstRun) {
   botReq = HTTPS.request(options, function(res) {
       if(res.statusCode == 200) {
         res.on('data', function (chunk) {
+          console.log('postMessage ' + firstRun)
           getGames(JSON.parse(chunk).accountId, message, firstRun);
         });
       } else if(res.statusCode == 429) {
@@ -58,6 +60,7 @@ function getGames(message, summonerName, firstRun) {
           if(mostRecentGames[summonerName] != gameId) {
             console.log('Updating ' + summonerName + ' latest game to GameID ' + gameId)
             mostRecentGames[summonerName] = gameId;
+             console.log('getGames ' + firstRun)
             getMostRecentGame(gameId, message, firstRun);
           }
         });
@@ -113,7 +116,7 @@ function getMostRecentGame(message, accountId, firstRun) {
                 stats[4] = result.participants[i].stats.assists
               }
           }
-          console.log(firstRun)
+          console.log('getMostRecentGame ' + firstRun)
           if(!stats[1] && !firstRun) {
             tilt(stats)
           } else {
@@ -188,6 +191,7 @@ function sendEachLine(filename, firstRun) {
     var lines = data.toString().split('\n');
     for(var i = 0; i < lines.length; i++){
       if(lines[i] != '')
+      console.log('sendEachLine' + firstRun)
       postMessage(lines[i], firstRun);
       sleep(2000)
     }
@@ -195,7 +199,7 @@ function sendEachLine(filename, firstRun) {
 }
 
 function checkGames(firstRun) {
-  console.log(process.cwd())
+  console.log('checkGames ' + firstRun)
   sendEachLine("./Resources/summoners.txt", firstRun)
 }
 
