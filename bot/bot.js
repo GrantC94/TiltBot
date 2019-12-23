@@ -59,7 +59,11 @@ function getGames(message, summonerName) {
           if(mostRecentGames[summonerName] != gameId) {
             oldMostRecentGames[summonerName] = mostRecentGames[summonerName];
             mostRecentGames[summonerName] = gameId;
-            getMostRecentGame(gameId, message);
+            if(oldMostRecentGames[message] != undefined) {
+              getMostRecentGame(gameId, message);
+            } else {
+              console.log('Skipping ' + summonerName + '. ' + mostRecentGames[summonerName] + ' is the first game loaded.')
+            }
           }
         });
       } else if(res.statusCode == 429) {
@@ -114,7 +118,7 @@ function getMostRecentGame(message, accountId) {
                 stats[4] = result.participants[i].stats.assists
               }
           }
-          if(!stats[1] && oldMostRecentGames[message] != undefined) {
+          if(!stats[1]) {
             tilt(stats)
           } else {
             console.log(stats[0] + ' Winned') 
