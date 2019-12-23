@@ -114,7 +114,7 @@ function getMostRecentGame(message, accountId) {
                 stats[4] = result.participants[i].stats.assists
               }
           }
-          if(!stats[1] && oldMostRecentGames[summonerName] != undefined) {
+          if(!stats[1] && oldMostRecentGames[message] != undefined) {
             tilt(stats)
           } else {
             console.log(stats[0] + ' Winned') 
