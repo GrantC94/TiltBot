@@ -7,8 +7,9 @@
     "start": "node bot/index.js"
   },
   "dependencies": {
+    "cool-ascii-faces": "~1.3.x",
     "director": "",
-    "cool-ascii-faces": "~1.3.x"
+    "node-fetch": "^2.6.0"
   },
   "engines": {
     "node": "0.10.x"

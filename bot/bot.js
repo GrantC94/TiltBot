@@ -1,31 +1,47 @@
 var HTTPS = require('https');
 var fs = require('fs');
+var fetch = require('node-fetch');
 var botID = process.env.BOT_ID;
 var leagueKey = process.env.LEAGUE_KEY;
+var championKeys = [];
+var numberOfSummoners;
+var accountIDs = [];
 var mostRecentGames = [];
 var oldMostRecentGames = [];
 
-function initialize(firstRun) {
+function initialize() {
+  loadChampionInfo();
   checkGames();
 }
 
-function postMessage(message) {
+
+function run() {
+  console.log("running")
+  for (var accountID in accountIDs) {
+    getGames(accountIDs[accountID], accountID)
+  }
+}
+
+function getAccountId(summonerName) {
   var options, body, botReq;
 
   options = {
     hostname: 'na1.api.riotgames.com',
-    path: '/lol/summoner/v4/summoners/by-name/' + message + '?api_key=' + leagueKey,
+    path: '/lol/summoner/v4/summoners/by-name/' + summonerName + '?api_key=' + leagueKey,
     method: 'GET'
   };
-  console.log(message)
+  
   botReq = HTTPS.request(options, function(res) {
       if(res.statusCode == 200) {
         res.on('data', function (chunk) {
-          getGames(JSON.parse(chunk).accountId, message);
+          accountIDs[summonerName] = JSON.parse(chunk).accountId
+          if(numberOfSummoners == Object.keys(accountIDs).length) {
+            run()
+          }
         });
       } else if(res.statusCode == 429) {
         sleep(4000)
-        postMessage(message);
+        getAccountId(summonerName);
       } else {
         console.log('rejecting bad status code ' + res.statusCode);
       }
@@ -40,37 +56,36 @@ function postMessage(message) {
   botReq.end(JSON.stringify(body));
 }
 
-function getGames(message, summonerName) {
+function getGames(accountID, summonerName) {
   var botResponse, options, body, botReq;
 
-  botResponse = message;
-  
   options = {
     hostname: 'na1.api.riotgames.com',
-    path: '/lol/match/v4/matchlists/by-account/' + message + '?queue=420&queue=440&queue=700&endIndex=1&beginIndex=0&api_key=' + leagueKey,
+    path: '/lol/match/v4/matchlists/by-account/' + accountID + '?queue=420&queue=440&queue=700&endIndex=1&beginIndex=0&api_key=' + leagueKey,
     method: 'GET'
   };
 
   botReq = HTTPS.request(options, function(res) {
       if(res.statusCode == 200) {
         res.on('data', function (chunk) {
-          //console.log('BODY: ' + chunk);
           var gameId = JSON.parse(chunk).matches[0].gameId
           if(mostRecentGames[summonerName] != gameId) {
             oldMostRecentGames[summonerName] = mostRecentGames[summonerName];
             mostRecentGames[summonerName] = gameId;
+
             if(oldMostRecentGames[summonerName] != undefined) {
-              getMostRecentGame(gameId, message);
+              getMostRecentGame(gameId, accountID);
             } else {
-              console.log('Skipping ' + summonerName + '. ' + mostRecentGames[summonerName] + ' is the first game loaded.')
+              console.log('Skipping ' + summonerName + '. ' + mostRecentGames[summonerName] + ' is the first //game loaded.')
             }
           }
         });
       } else if(res.statusCode == 429) {
         sleep(4000)
-        getGames(message, summonerName);
+        getGames(accountID, summonerName);
       } else {
         console.log('rejecting bad status code ' + res.statusCode);
+        console.log('failure for ' + accountID + ", summoner name: " + summonerName)
       }
   });
 
@@ -103,19 +118,18 @@ function getMostRecentGame(message, accountId) {
           var participantId = null
           var result = JSON.parse(data.join(''))
           for (var i = 0; i < result.participantIdentities.length; i++) {
-              //console.log(result.participantIdentities[i]);
               if(result.participantIdentities[i].player.accountId == accountId) {
                 participantId = result.participantIdentities[i].participantId
                 stats[0] = result.participantIdentities[i].player.summonerName
               }
           }
           for (var i = 0; i < result.participants.length; i++) {
-              //console.log(result.participantIdentities[i]);
               if(result.participants[i].participantId == participantId) {
                 stats[1] = result.participants[i].stats.win
                 stats[2] = result.participants[i].stats.kills
                 stats[3] = result.participants[i].stats.deaths
                 stats[4] = result.participants[i].stats.assists
+                stats[5] = championKeys[result.participants[i].championId]
               }
           }
           if(!stats[1]) {
@@ -144,7 +158,7 @@ function getMostRecentGame(message, accountId) {
 function tilt(stats) {
   var botResponse, options, body, botReq;
 
-  botResponse = 'Yikes! ' + stats[0] + ' just lost a League game! They went ' + stats[2] + '/' + stats[3] + '/' + stats[4] + '! That\'s a tilter!';
+  botResponse = 'Yikes! ' + stats[0] + ' just lost a League game! They went ' + stats[2] + '/' + stats[3] + '/' + stats[4] + ' on ' + stats[5] + '! That\'s a tilter!';
 
   options = {
     hostname: 'api.groupme.com',
@@ -176,6 +190,35 @@ function tilt(stats) {
   botReq.end(JSON.stringify(body));
 }
 
+function parseSummoners(filename) {
+  var data = ""
+  data = fs.readFileSync(filename)
+  var lines = data.toString().split('\n');
+  for(var i = 0; i < lines.length; i++){
+    if(lines[i] != '')
+    getAccountId(lines[i]);
+  }
+  numberOfSummoners = lines.length-1;
+}
+
+function checkGames() {
+    parseSummoners("./Resources/summoners.txt")
+}
+
+function loadChampionInfo() {
+  let url = "http://ddragon.leagueoflegends.com/cdn/10.2.1/data/en_US/champion.json";
+
+  let settings = { method: "Get" };
+
+  fetch(url, settings)
+    .then(res => res.json())
+    .then((json) => {
+        for (var champion in json.data) {
+          championKeys[json.data[champion].key] = champion
+        }
+    });
+}
+
 function sleep(milliseconds) {
   var start = new Date().getTime();
   for (var i = 0; i < 1e7; i++) {
@@ -185,21 +228,5 @@ function sleep(milliseconds) {
   }
 }
 
-function sendEachLine(filename) {
-  var data = ""
-  fs.readFile(filename, function(err, data){
-    if(err) throw err;
-    var lines = data.toString().split('\n');
-    for(var i = 0; i < lines.length; i++){
-      if(lines[i] != '')
-      postMessage(lines[i]);
-      sleep(2000)
-    }
- })
-}
-
-function checkGames() {
-  sendEachLine("./Resources/summoners.txt")
-}
-
 exports.initialize = initialize;
+exports.run = run;

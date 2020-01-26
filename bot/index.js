@@ -27,7 +27,7 @@ server = http.createServer(function (req, res) {
 port = Number(process.env.PORT || 5000);
 server.listen(port);
 
-bot.initialize(true);
+bot.initialize();
 
 //These pings keep the Heroku app awake
 https.get("https://tiltbot2.herokuapp.com/");
@@ -36,7 +36,7 @@ setInterval(function() {
 }, 300000);
 
 setInterval(function() {
-  bot.initialize(false)
+  bot.run()
 }, 600000)
 
 function ping() {
