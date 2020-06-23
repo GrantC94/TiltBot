@@ -159,7 +159,7 @@ function tilt(stats) {
 
   function tiltOnResponse(res) {
     if(res.statusCode == 202) {
-        console.log('sent ' + tiltmessage + ' to ' + botID);
+        console.log('sent ' + tiltMessage + ' to ' + botID);
       } else {
         console.log('failed sending ' + tiltMessage + ' to ' + botID);
         console.log('rejecting bad status code ' + res.statusCode);
