@@ -1,10 +1,11 @@
-var http, director, cool, bot, router, server, port;
+var http, director, cool, bot, router, server, port, tiltBotEnable;
 
-http        = require('http');
-https       = require('https');
-director    = require('director');
-cool        = require('cool-ascii-faces');
-bot         = require('./bot.js');
+http            = require('http');
+https           = require('https');
+director        = require('director');
+cool            = require('cool-ascii-faces');
+tiltBot         = require('./tiltBot.js');
+tiltBotEnable   = process.env.TILTBOT_ENABLE
 
 router = new director.http.Router({
   '/' : {
@@ -27,7 +28,9 @@ server = http.createServer(function (req, res) {
 port = Number(process.env.PORT || 5000);
 server.listen(port);
 
-bot.initialize();
+if(tiltBotEnable) {
+  tiltBot.initialize();
+}
 
 //These pings keep the Heroku app awake
 https.get("https://tiltbot2.herokuapp.com/");
@@ -36,7 +39,8 @@ setInterval(function() {
 }, 300000);
 
 setInterval(function() {
-  bot.run()
+  if(tiltBotEnable)
+  tiltBot.run()
 }, 600000)
 
 function ping() {
