@@ -9,7 +9,7 @@
   "dependencies": {
     "cool-ascii-faces": "~1.3.x",
     "director": "",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.1"
   },
   "engines": {
     "node": "0.10.x"
