@@ -32,11 +32,9 @@ async function botRequest(httpInfo, onResponse, body) {
 }
 
 async function loadSummonerCache() {
-    console.log("Loading Account ID Cache")
+    console.log("Loading Summoner Cache")
     await parseSummoners("./Resources/summoners.txt")
-    for (var accountInfo in accountInfoDumps) {
-      console.log(accountInfoDumps[accountInfo].puuid);
-    }
+    console.log("Summoner Cache Loadding Complete")
     return;
 }
 

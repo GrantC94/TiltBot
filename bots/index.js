@@ -54,7 +54,6 @@ function ping() {
 
 async function initializeBots() {
   await botUtils.loadSummonerCache();
-  console.log(tiltBotEnable)
   tiltBot.initialize(tiltBotEnable);
   tfTilter.initialize(tfTilterEnable);
   return;
