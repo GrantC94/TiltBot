@@ -1,55 +1,27 @@
-var botUtils, fs, fetch, botID, leagueKey, championKeys, numberOfSummoners, accountIDs,
-    mostRecentGames, oldMostRecentGames;
+var botUtils, fs, fetch, botID, leagueKey, championKeys, numberOfSummoners, mostRecentGames, oldMostRecentGames;
 
-botUtils            = require('./utils.js');
-fs                  = require('fs');
+botUtils            = require('./botUtils.js');
 fetch               = require('node-fetch');
 botID               = process.env.BOT_ID;
 leagueKey           = process.env.LEAGUE_KEY;
 championKeys        = [];
-numberOfSummoners;
-accountIDs          = [];
 mostRecentGames     = [];
 oldMostRecentGames  = [];
 
-function initialize() {
-  loadChampionInfo();
-  checkGames();
+function initialize(enabled) {
+  if(!enabled) {
+    console.log("Tiltbot Disabled.")
+  } else {
+    console.log("Initiating Tiltbot")
+    loadChampionInfo();
+    run();
+  }
 }
 
 function run() {
-  console.log("Initializing Tilt")
-  for (var accountID in accountIDs) {
-    getGames(accountIDs[accountID], accountID)
+  for (var summonerName in botUtils.accountInfoDumps) {
+    getGames(botUtils.accountInfoDumps[summonerName].accountId, summonerName)
   }
-}
-
-function getAccountId(summonerName) {
-  var options;
-
-  options = {
-    hostname: 'na1.api.riotgames.com',
-    path: '/lol/summoner/v4/summoners/by-name/' + summonerName + '?api_key=' + leagueKey,
-    method: 'GET'
-  };
-  
-  function getAccountIdOnResponse(res) {
-    if(res.statusCode == 200) {
-      res.on('data', function (chunk) {
-        accountIDs[summonerName] = JSON.parse(chunk).accountId
-        if(numberOfSummoners == Object.keys(accountIDs).length) {
-          run()
-        }
-      });
-    } else if(res.statusCode == 429) {
-      botUtils.sleep(4000)
-      getAccountId(summonerName);
-    } else {
-      console.log('rejecting bad status code ' + res.statusCode);
-    }
-  }
-
-  botUtils.botRequest(options, getAccountIdOnResponse);
 }
 
 function getGames(accountID, summonerName) {
@@ -169,23 +141,8 @@ function tilt(stats) {
   botUtils.botRequest(options, tiltOnResponse, body);
 }
 
-function parseSummoners(filename) {
-  var data = ""
-  data = fs.readFileSync(filename)
-  var lines = data.toString().split('\n');
-  for(var i = 0; i < lines.length; i++){
-    if(lines[i] != '')
-    getAccountId(lines[i]);
-  }
-  numberOfSummoners = lines.length-1;
-}
-
-function checkGames() {
-    parseSummoners("./Resources/summoners.txt")
-}
-
 function loadChampionInfo() {
-  let url = "http://ddragon.leagueoflegends.com/cdn/10.2.1/data/en_US/champion.json";
+  let url = "http://ddragon.leagueoflegends.com/cdn/10.19.1/data/en_US/champion.json";
 
   let settings = { method: "Get" };
 
