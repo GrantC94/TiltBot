@@ -1,7 +1,9 @@
 var HTTPS               = require('https');
 var fs                  = require('fs');
 var leagueKey           = process.env.LEAGUE_KEY;
-var accountInfoDumps    = [];
+var tftKey              = process.env.TFT_KEY;
+var leagueAccountInfo   = [];
+var tftAccountInfo      = [];
 
 function sleep(milliseconds) {
   var start = new Date().getTime();
@@ -44,24 +46,27 @@ async function parseSummoners(filename) {
   var lines = data.toString().split('\n');
   for(var i = 0; i < lines.length; i++){
     if(lines[i] != '')
-    await getAccountId(lines[i]);
+    await getAccountId(lines[i], leagueAccountInfo, leagueKey, '/lol/summoner/v4/summoners/by-name/', false);
+    await getAccountId(lines[i], tftAccountInfo, tftKey, '/tft/summoner/v1/summoners/by-name/', true);
   }
   return;
 }
 
-async function getAccountId(summonerName) {
+async function getAccountId(summonerName, accountInfo, apiKey, pathPrefix, doFilter) {
   var options;
+
+  var filteredSummonerName =  doFilter ? summonerName.replace(/%20/g, "") : summonerName
 
   options = {
     hostname: 'na1.api.riotgames.com',
-    path: '/lol/summoner/v4/summoners/by-name/' + summonerName + '?api_key=' + leagueKey,
+    path: pathPrefix + filteredSummonerName  + '?api_key=' + apiKey,
     method: 'GET'
-  };
-  
+  }
+
   async function getAccountIdOnResponse(res) {
     if(res.statusCode == 200) {
       await res.on('data', function (chunk) {
-        accountInfoDumps[summonerName] = JSON.parse(chunk)
+        accountInfo[summonerName] = JSON.parse(chunk)
       });
     } else if(res.statusCode == 429) {
       sleep(4000)
@@ -79,4 +84,5 @@ async function getAccountId(summonerName) {
 exports.botRequest = botRequest;
 exports.sleep = sleep;
 exports.loadSummonerCache = loadSummonerCache;
-exports.accountInfoDumps = accountInfoDumps;
+exports.leagueAccountInfo = leagueAccountInfo;
+exports.tftAccountInfo = tftAccountInfo;

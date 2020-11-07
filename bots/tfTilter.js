@@ -20,9 +20,9 @@ function initialize(enabled) {
 
 function run(enabled) {
   var name, puuid
-  for (var accountInfo in botUtils.accountInfoDumps) {
-    name = botUtils.accountInfoDumps[accountInfo].name
-    puuid = botUtils.accountInfoDumps[accountInfo].puuid
+  for (var accountInfo in botUtils.tftAccountInfo) {
+    name = botUtils.tftAccountInfo[accountInfo].name
+    puuid = botUtils.tftAccountInfo[accountInfo].puuid
     summonersByPUUID[puuid] = name
     tftilt(name, puuid);
   }
@@ -48,7 +48,7 @@ function tftilt(summonerName, puuid) {
           if(oldMostRecentGames[summonerName] != undefined) {
             getMostRecentGame(gameId, summonerName);
           } else {
-            console.log('Skipping ' + summonerName + '. ' + mostRecentGames[summonerName] + ' is the first game loaded.')
+            console.log('TFT Skipping ' + summonerName + '. ' + mostRecentGames[summonerName] + ' is the first game loaded.')
           }
         }
       });
