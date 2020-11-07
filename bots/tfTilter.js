@@ -3,7 +3,7 @@ var botUtils, fetch, botID, leagueKey, championKeys, mostRecentGames, oldMostRec
 botUtils            = require('./botUtils.js');
 fetch               = require('node-fetch');
 botID               = process.env.BOT_ID;
-leagueKey           = process.env.LEAGUE_KEY;
+leagueKey           = process.env.TFT_KEY;
 summonersByPUUID    = [];
 mostRecentGames     = [];
 oldMostRecentGames  = [];
