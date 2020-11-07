@@ -19,8 +19,8 @@ function initialize(enabled) {
 }
 
 function run() {
-  for (var summonerName in botUtils.accountInfoDumps) {
-    getGames(botUtils.accountInfoDumps[summonerName].accountId, summonerName)
+  for (var summonerName in botUtils.leagueAccountInfo) {
+    getGames(botUtils.leagueAccountInfo[summonerName].accountId, summonerName)
   }
 }
 
