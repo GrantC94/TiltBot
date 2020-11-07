@@ -44,7 +44,7 @@ setInterval(function() {
 }, 600000)
 
 setInterval(function() {
-  tiltBot.run(tfTilterEnable)
+  tfTilter.run(tfTilterEnable)
 }, 600000)
 
 function ping() {
