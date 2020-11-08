@@ -54,7 +54,7 @@ function tftilt(summonerName, puuid) {
       });
     } else if(res.statusCode == 429) {
       botUtils.sleep(4000)
-      getGames(summonerName, puuid);
+      tftilt(summonerName, puuid);
     } else {
       console.log('rejecting bad status code ' + res.statusCode);
       console.log('failure for ' + puuid + ", summoner name: " + summonerName)
