@@ -19,9 +19,6 @@ function initialize(enabled) {
 }
 
 function run(enabled) {
-  console.log('running')
-  console.log(mostRecentTFTGames)
-  console.log(oldMostRecentTFTGames)
   var name, puuid
   for (var accountInfo in botUtils.tftAccountInfo) {
     name = botUtils.tftAccountInfo[accountInfo].name
@@ -44,7 +41,6 @@ function tftilt(summonerName, puuid) {
     if(res.statusCode == 200) {
       res.on('data', function (chunk) {
         var gameId = JSON.parse(chunk)[0]
-        console.log(gameId)
         if(mostRecentTFTGames[summonerName] != gameId) {
           oldMostRecentTFTGames[summonerName] = mostRecentTFTGames[summonerName];
           mostRecentTFTGames[summonerName] = gameId;
