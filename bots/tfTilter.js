@@ -1,12 +1,12 @@
-var botUtils, fetch, botID, leagueKey, championKeys, mostRecentGames, oldMostRecentGames;
+var botUtils, fetch, botID, leagueKey, championKeys, mostRecentTFTGames, oldMostRecentTFTGames;
 
 botUtils            = require('./botUtils.js');
 fetch               = require('node-fetch');
 botID               = process.env.BOT_ID;
 leagueKey           = process.env.TFT_KEY;
 summonersByPUUID    = [];
-mostRecentGames     = [];
-oldMostRecentGames  = [];
+mostRecentTFTGames     = [];
+oldMostRecentTFTGames  = [];
 
 const nicknames = ['', '', '', '', "Fifth Place Fredrick", "Sixth Place Samson", "Seventh Place Susan", "Eight Place Andy"]
 function initialize(enabled) {
@@ -41,14 +41,14 @@ function tftilt(summonerName, puuid) {
     if(res.statusCode == 200) {
       res.on('data', function (chunk) {
         var gameId = JSON.parse(chunk)[0]
-        if(mostRecentGames[summonerName] != gameId) {
-          oldMostRecentGames[summonerName] = mostRecentGames[summonerName];
-          mostRecentGames[summonerName] = gameId;
+        if(mostRecentTFTGames[summonerName] != gameId) {
+          oldMostRecentTFTGames[summonerName] = mostRecentTFTGames[summonerName];
+          mostRecentTFTGames[summonerName] = gameId;
 
-          if(oldMostRecentGames[summonerName] != undefined) {
-            getMostRecentGame(gameId, summonerName);
+          if(oldMostRecentTFTGames[summonerName] != undefined) {
+            getMostRecentTFTGame(gameId, summonerName, puuid);
           } else {
-            console.log('TFT Skipping ' + summonerName + '. ' + mostRecentGames[summonerName] + ' is the first game loaded.')
+            console.log('TFT Skipping ' + summonerName + '. ' + mostRecentTFTGames[summonerName] + ' is the first game loaded.')
           }
         }
       });
@@ -64,7 +64,7 @@ function tftilt(summonerName, puuid) {
   botUtils.botRequest(options, getGamesOnResponse);
 }
 
-function getMostRecentGame(gameId, summonerName, puuid) {
+function getMostRecentTFTGame(gameId, summonerName, puuid) {
   var options;
   
   options = {
@@ -73,7 +73,7 @@ function getMostRecentGame(gameId, summonerName, puuid) {
     method: 'GET'
   };
 
-  function getMostRecentGameOnRespone(res) {
+  function getMostRecentTFTGameOnRespone(res) {
     if(res.statusCode == 200) {
         var stats = [];
         var data = [];
@@ -81,9 +81,10 @@ function getMostRecentGame(gameId, summonerName, puuid) {
           data.push(chunk);
         });
         res.on('end', function() {
+          console.log('HERE2')
           var results = JSON.parse(data.join(''));
           if(results.info.queue_id != 1100) {
-            mostRecentGames[summonerName] = oldMostRecentGames[summonerName];
+            mostRecentTFTGames[summonerName] = oldMostRecentTFTGames[summonerName];
           } else {
             var participants = results.info.participants;
             var participant = participants.filter(participant => {
@@ -97,13 +98,13 @@ function getMostRecentGame(gameId, summonerName, puuid) {
         });
       }  else if(res.statusCode == 429) {
         botUtils.sleep(4000);
-        getMostRecentGame(gameId, summonerName, puuid);
+        getMostRecentTFTGame(gameId, summonerName, puuid);
       } else {
         console.log('rejecting bad status code ' + res.statusCode);
       }
   }
 
-  botUtils.botRequest(options, getMostRecentGameOnRespone);
+  botUtils.botRequest(options, getMostRecentTFTGameOnRespone);
 }
 
 function tilt(tiltMessage) {
