@@ -1,5 +1,6 @@
 # Tilted?
 
+https://travis-ci.com/GrantC94/TiltBot.svg?branch=master
 
 Env Variables:
   - $BOT_ID = Groupme Bot ID used to publish as the Groupme Bot
