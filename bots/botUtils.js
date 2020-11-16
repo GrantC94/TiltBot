@@ -81,6 +81,16 @@ async function getAccountId(summonerName, accountInfo, apiKey, pathPrefix, doFil
   return await botRequest(options, getAccountIdOnResponse);
 }
 
+function respond() {
+  var test = this.req.chunks[0];
+  var request = JSON.parse(this.req.chunks[0]),
+  botRegex = /^!tilt/i;
+  console.log(test)
+  console.log(request)
+
+}
+
+exports.respond = respond;
 exports.botRequest = botRequest;
 exports.sleep = sleep;
 exports.loadSummonerCache = loadSummonerCache;

@@ -12,6 +12,7 @@ tiltBotEnable   = process.env.TILTBOT_ENABLE == 'true'
 
 router = new director.http.Router({
   '/' : {
+    post: botUtils.respond,
     get: ping
   }
 });
