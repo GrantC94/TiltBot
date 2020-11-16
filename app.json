@@ -3,4 +3,5 @@
   "description": "Tilting Groupme Bot written in Node",
   "repository": "https://github.com/GrantC94/TiltBot",
   "keywords": []
+  "stack": "heroku-18"
 }
