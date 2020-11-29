@@ -3,5 +3,5 @@
 heroku container:login
 docker login --username=_ --password="$HEROKU_API_KEY" registry.heroku.com
 docker build -t registry.heroku.com/test-tilt-bot/web .
-heroku container:push web -a tiltbot2
-heroku container:release web -a tiltbot2
+heroku container:push web -a test-tilt-bot
+heroku container:release web -a test-tilt-bot
