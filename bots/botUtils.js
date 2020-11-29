@@ -86,7 +86,7 @@ function respond() {
   var request = JSON.parse(this.req.chunks[0]),
   botRegex = /^!tilt/i;
   console.log(test)
-  console.log(request)
+  console.log('request' + request)
 
 }
 
