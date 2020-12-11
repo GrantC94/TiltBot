@@ -142,7 +142,7 @@ function tilt(stats) {
 }
 
 function loadChampionInfo() {
-  let url = "http://ddragon.leagueoflegends.com/cdn/10.19.1/data/en_US/champion.json";
+  let url = "http://ddragon.leagueoflegends.com/cdn/10.24.1/data/en_US/champion.json";
 
   let settings = { method: "Get" };
 
