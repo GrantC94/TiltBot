@@ -1,3 +1,7 @@
+WE'VE MIGRATED TO GITLAB!
+FIND US HERE!
+https://gitlab.com/GrantC94/TiltBot
+
 # Tilted?
 
 https://travis-ci.com/GrantC94/TiltBot.svg?branch=master
